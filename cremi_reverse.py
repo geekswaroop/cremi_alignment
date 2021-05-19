@@ -325,3 +325,4 @@ if __name__ == "__main__":
         print("Thresholding for final submission...")
         threshold_vol(vol_idx, channel, args.threshold)
     print("Done!")
+    print("Reversed volumes available at reverse/result04/")
