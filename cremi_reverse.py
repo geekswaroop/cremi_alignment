@@ -166,7 +166,7 @@ def bad_slices_fix(vol_idx, channel_num):
    
         
         
-def threshold_vol(vol_idx, channel_num, thres = 0.5):
+def threshold_vol(vol_idx, channel_num, thres):
     for i in vol_idx:
         if i == 0:
             vol_name = "A+"
@@ -176,7 +176,7 @@ def threshold_vol(vol_idx, channel_num, thres = 0.5):
             vol_name = "C+"
         vol_path = 'reverse/result04/results_new_' + vol_name + '_v2_200_' + str(channel_num) + '.h5'
         vol = readh5(vol_path)
-        threshold_limit = thres*256
+        threshold_limit = thres*255
         vol_mod = (vol>threshold_limit).astype(np.uint8)
         writeh5(vol_path, vol_mod)
         
@@ -274,7 +274,7 @@ def parse_arguments():
     parser.add_argument('-a', '--pathA', help='Filepath for VolA', default='.', type=str)
     parser.add_argument('-b', '--pathB', help='Filepath for VolB', default='.', type=str)
     parser.add_argument('-c', '--pathC', help='Filepath for VolC', default='.', type=str)
-    parser.add_argument('-thres', '--threshold', help='Threshold for volume generation', default=0.5, type=float)
+    parser.add_argument('-thres', '--threshold', help='Threshold for volume generation', default=None, type=float)
     args = parser.parse_args()
     return args
 
@@ -322,7 +322,8 @@ if __name__ == "__main__":
         type_conversion(vol_idx, channel)
         print("Bad slices are being fixed...")
         bad_slices_fix(vol_idx, channel)
-        print("Thresholding for final submission...")
-        threshold_vol(vol_idx, channel, args.threshold)
+        if args.threshold != None and args.threshold < 1 and args.threshold > 0:
+            print("Thresholding for final submission...")
+            threshold_vol(vol_idx, channel, args.threshold)
     print("Done!")
     print("Reversed volumes available at reverse/result04/")
